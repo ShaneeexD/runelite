@@ -1,22 +1,19 @@
 package net.runelite.client.plugins.craftingtraining;
 
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import net.runelite.api.*;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.*;
-import net.runelite.client.ui.overlay.infobox.InfoBoxPriority;
+
 
 import javax.inject.Inject;
 import java.awt.*;
 
 
+
 public class craftingOverlay extends Overlay
 {
-
     private final Client client;
     private final craftingConfig config;
     private final PanelComponent panelComponent = new PanelComponent();
@@ -42,13 +39,16 @@ public class craftingOverlay extends Overlay
                 .color(Color.GREEN)
                 .build());
         panelComponent.setPreferredSize(new Dimension(
-                graphics.getFontMetrics().stringWidth(overlayTitle) + 100,
+                graphics.getFontMetrics().stringWidth(overlayTitle) + 120,
                 0));
         panelComponent.getChildren().add(LineComponent.builder()
                 .left("Method: " + plugin.methodtext)
                 .build());
         panelComponent.getChildren().add(LineComponent.builder()
                 .left("Crafting level: " + plugin.craftingLevel)
+                .build());
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Location: " + plugin.location)
                 .build());
         panelComponent.getChildren().add(LineComponent.builder()
                 .left("                   ")
@@ -62,7 +62,7 @@ public class craftingOverlay extends Overlay
         panelComponent.getChildren().add(LineComponent.builder()
                 .left(plugin.itemtext2)
                 .build());
-        if (config.SelectTrainingMethod() != craftingConfig.OptionEnum.GBracelet)
+        if (config.SelectTrainingMethod() != craftingConfig.OptionEnum.GOLDBRACELET)
         {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left(plugin.itemtext3)

@@ -13,9 +13,9 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
-import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxPriority;
+import net.runelite.client.ui.overlay.infobox.Timer;
 
 
 import javax.inject.Inject;
@@ -45,8 +45,8 @@ public class craftingPlugin extends Plugin {
     String name2;
     String name3;
     String xpperhour;
+    String location;
     int output;
-    int quantity;
     int craftingLevel;
     int profitability;
     @Inject
@@ -87,8 +87,24 @@ public class craftingPlugin extends Plugin {
     @Subscribe
     public void onConfigChanged(ConfigChanged event)
     {
-
-        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.GBracelet)
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.LEATHERGLOVES)
+        {
+            icon1 = 1734;
+            name1 = "Thread";
+            icon2 = 1741;
+            name2 = "Leather";
+            icon3 = 1733;
+            name3 = "Needle";
+            methodtext = "Leather Gloves";
+            itemtext1 = "1x Thread (Per 4 Leather)";
+            itemtext2 = "1x Leather";
+            itemtext3 = "Needle";
+            craftingLevel = 1;
+            xpperhour = "25k";
+            output = 1059;
+            location = "Anywhere";
+        }
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.GOLDBRACELET)
         {
             icon1 = 2357;
             name1 = "Gold Bar";
@@ -100,9 +116,9 @@ public class craftingPlugin extends Plugin {
             craftingLevel = 7;
             xpperhour = "35k";
             output = 11068;
-            quantity = 27;
+            location = "Edgeville";
         }
-        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.RBracelet)
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.RUBYBRACELET)
         {
             icon1 = 2357;
             name1 = "Gold Bar";
@@ -117,9 +133,9 @@ public class craftingPlugin extends Plugin {
             craftingLevel = 42;
             xpperhour = "115k";
             output = 11085;
-            quantity = 13;
+            location = "Edgeville";
         }
-        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.RAmulet)
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.RUBYAMULET)
         {
             icon1 = 2357;
             name1 = "Gold Bar";
@@ -134,9 +150,9 @@ public class craftingPlugin extends Plugin {
             craftingLevel = 50;
             xpperhour = "125k";
             output = 1679;
-            quantity = 13;
+            location = "Edgeville";
         }
-        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.DBracelet)
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.DIABRACELET)
         {
             icon1 = 2357;
             name1 = "Gold Bar";
@@ -151,9 +167,43 @@ public class craftingPlugin extends Plugin {
             craftingLevel = 58;
             xpperhour = "140k";
             output = 11092;
-            quantity = 13;
+            location = "Edgeville";
         }
-        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.DRBracelet)
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.GREENDHIDE)
+        {
+            icon1 = 1734;
+            name1 = "Thread";
+            icon2 = 1745;
+            name2 = "Green Dragon Leather";
+            icon3 = 1733;
+            name3 = "Needle";
+            methodtext = "Green D'Hide Body";
+            itemtext1 = "1x Thread (Per 13 Hide)";
+            itemtext2 = "1x Green Dragon Leather";
+            itemtext3 = "Needle";
+            craftingLevel = 63;
+            xpperhour = "300k";
+            output = 1135;
+            location = "Anywhere";
+        }
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.DIAAMULET)
+        {
+            icon1 = 2357;
+            name1 = "Gold Bar";
+            icon2 = 1601;
+            name2 = "Diamond";
+            icon3 = 1595;
+            name3 = "Amulet Mould";
+            methodtext = "Diamond Amulet (u)";
+            itemtext1 = "1x Gold Bar";
+            itemtext2 = "1x Diamond";
+            itemtext3 = "Amulet Mould";
+            craftingLevel = 70;
+            xpperhour = "145k";
+            output = 1681;
+            location = "Edgeville";
+        }
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.DSBRACELET)
         {
             icon1 = 2357;
             name1 = "Gold Bar";
@@ -168,9 +218,18 @@ public class craftingPlugin extends Plugin {
             craftingLevel = 74;
             xpperhour = "160k";
             output = 11115;
-            quantity = 13;
+            location = "Edgeville";
         }
 
+
+        if (location != "Edgeville")
+        {
+            overlayManager.remove(clickboxoverlay);
+        }
+        else
+        {
+            overlayManager.add(clickboxoverlay);
+        }
 
         removeInfobox();
         updateInfobox();
@@ -180,10 +239,20 @@ public class craftingPlugin extends Plugin {
     @Subscribe
     public void onGameTick(GameTick event)
     {
-        int itemcost1 =  itemManager.getItemPriceWithSource(icon1, true);
-        int itemcost2 =  itemManager.getItemPriceWithSource(icon2, true);
+        int itemcost1 = itemManager.getItemPriceWithSource(icon1, true);
+        int itemcost2 = itemManager.getItemPriceWithSource(icon2, true);
         int itemsell = itemManager.getItemPriceWithSource(output, true);
-        profitability = itemsell - (itemcost1 + itemcost2);
+        if (config.SelectTrainingMethod() == craftingConfig.OptionEnum.GOLDBRACELET) {
+            profitability = itemsell - itemcost1;
+        }
+        else
+            {
+                profitability = itemsell - (itemcost1 + itemcost2);
+            }
+
+
+
+
     }
 
     @Subscribe
@@ -191,16 +260,15 @@ public class craftingPlugin extends Plugin {
     {
         GameObject gameObject = event.getGameObject();
 
-        switch (gameObject.getId())
-        {
-
-            case FURNACE:
-                furnace = gameObject;
-                break;
-            case BANK:
-                bank = gameObject;
-                break;
-        }
+            switch (gameObject.getId())
+            {
+                case FURNACE:
+                    furnace = gameObject;
+                    break;
+                case BANK:
+                    bank = gameObject;
+                    break;
+             }
     }
 
     @Subscribe
@@ -251,13 +319,13 @@ public class craftingPlugin extends Plugin {
 
     private void updateInfobox()
     {
-        final BufferedImage image1 = itemManager.getImage(icon1, quantity, false);
-        final BufferedImage image2 = itemManager.getImage(icon2, quantity, false);
-        if (config.SelectTrainingMethod() != craftingConfig.OptionEnum.GBracelet)
+        final BufferedImage image1 = itemManager.getImage(icon1, 1, false);
+        final BufferedImage image2 = itemManager.getImage(icon2, 1, false);
+        if (config.SelectTrainingMethod() != craftingConfig.OptionEnum.GOLDBRACELET)
         {
             final BufferedImage image3 = itemManager.getImage(icon3, 1, false);
             counterBox3 = new craftedCounter(this, icon1, 1, name3, image3);
-            counterBox2 = new craftedCounter(this, icon1, quantity, name2, image2);
+            counterBox2 = new craftedCounter(this, icon1, 1, name2, image2);
             infoBoxManager.addInfoBox(counterBox3);
         }
         else
@@ -265,7 +333,7 @@ public class craftingPlugin extends Plugin {
                 counterBox2 = new craftedCounter(this, icon1, 1, name2, image2);
             }
 
-        counterBox = new craftedCounter(this, icon1, quantity, name1, image1);
+        counterBox = new craftedCounter(this, icon1, 1, name1, image1);
         infoBoxManager.addInfoBox(counterBox);
         infoBoxManager.addInfoBox(counterBox2);
     }

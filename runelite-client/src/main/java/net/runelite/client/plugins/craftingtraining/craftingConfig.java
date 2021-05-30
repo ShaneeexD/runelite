@@ -13,19 +13,23 @@ import java.awt.*;
 
         enum OptionEnum
         {
-            GBracelet,
-            RBracelet,
-            RAmulet,
-            DBracelet,
-            DRBracelet,
+            LEATHERGLOVES,
+            GOLDBRACELET,
+            RUBYBRACELET,
+            RUBYAMULET,
+            DIABRACELET,
+            GREENDHIDE,
+            DIAAMULET,
+            DSBRACELET,
+
         }
         @ConfigItem(
                 position = 1,
                 keyName = "methodConfig",
                 name = "Training method",
-                description = "Select your training method"
+                description = "Select a training method"
         )
-        default OptionEnum SelectTrainingMethod() { return OptionEnum.RBracelet; }
+        default OptionEnum SelectTrainingMethod() { return OptionEnum.GOLDBRACELET; }
 
         @ConfigItem(
                 position = 2,
