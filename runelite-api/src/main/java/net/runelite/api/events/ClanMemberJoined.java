@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Adam <Adam@sigterm.info>
+ * Copyright (c) 2021, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,15 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.friendschat;
+package net.runelite.api.events;
 
 import lombok.Value;
-import net.runelite.api.MessageNode;
+import net.runelite.api.clan.ClanChannel;
+import net.runelite.api.clan.ClanChannelMember;
 
+/**
+ * An event when a clan member joins a clan channel.
+ */
 @Value
-class MemberJoinMessage
+public class ClanMemberJoined
 {
-	private final MessageNode messageNode;
-	private final int getMessageId;
-	private final int tick;
+	private final ClanChannel clanChannel;
+	private final ClanChannelMember clanMember;
 }
