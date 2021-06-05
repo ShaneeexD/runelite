@@ -76,6 +76,7 @@ public class craftingPlugin extends Plugin {
     @Getter(AccessLevel.PACKAGE)
     private GameObject furnace;
 
+
     @Getter(AccessLevel.PACKAGE)
     private GameObject bank;
 
