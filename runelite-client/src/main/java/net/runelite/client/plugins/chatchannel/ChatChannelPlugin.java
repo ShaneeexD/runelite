@@ -172,7 +172,15 @@ public class ChatChannelPlugin extends Plugin
 		chats = null;
 		clientThread.invoke(() -> colorIgnoredPlayers(Color.WHITE));
 		rebuildFriendsChat();
-		inputMode = null;
+
+		if (inputMode != null)
+		{
+			clientThread.invoke(() ->
+			{
+				switchTypingMode(null);
+				client.runScript(ScriptID.CHAT_PROMPT_INIT);
+			});
+		}
 	}
 
 	@Subscribe
@@ -187,6 +195,15 @@ public class ChatChannelPlugin extends Plugin
 
 			Color ignoreColor = config.showIgnores() ? config.showIgnoresColor() : Color.WHITE;
 			clientThread.invoke(() -> colorIgnoredPlayers(ignoreColor));
+
+			if (inputMode != null && !config.targetMode())
+			{
+				clientThread.invoke(() ->
+				{
+					switchTypingMode(null);
+					client.runScript(ScriptID.CHAT_PROMPT_INIT);
+				});
+			}
 		}
 	}
 
@@ -201,7 +218,7 @@ public class ChatChannelPlugin extends Plugin
 			return;
 		}
 
-		if (!config.showJoinLeave() ||
+		if (!config.showFriendsChatJoinLeave() ||
 			member.getRank().getValue() < config.joinLeaveRank().getValue())
 		{
 			return;
@@ -216,7 +233,7 @@ public class ChatChannelPlugin extends Plugin
 	{
 		final FriendsChatMember member = event.getMember();
 
-		if (!config.showJoinLeave() ||
+		if (!config.showFriendsChatJoinLeave() ||
 			member.getRank().getValue() < config.joinLeaveRank().getValue())
 		{
 			return;
@@ -313,11 +330,6 @@ public class ChatChannelPlugin extends Plugin
 			{
 				loadFriendsChats();
 			}
-		}
-
-		if (!config.showJoinLeave())
-		{
-			return;
 		}
 
 		timeoutMessages();
@@ -605,6 +617,11 @@ public class ChatChannelPlugin extends Plugin
 			}
 			case "preChatSendpublic":
 			{
+				if (!config.targetMode())
+				{
+					return;
+				}
+
 				final String chatboxInput = client.getVar(VarClientStr.CHATBOX_TYPED_TEXT);
 				switch (chatboxInput)
 				{
